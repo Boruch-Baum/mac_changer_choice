@@ -19,6 +19,11 @@ commands typically restricted to system administration roles.</dd>
 ###Requirements:
 macchanger [https://github.com/alobbs/macchanger](https://github.com/alobbs/macchanger)
 
+Your distribution may already have macchanger pre-packaged:
+
+* debian: [http://standards.ieee.org/develop/regauth/tut/eui.pdf](http://standards.ieee.org/develop/regauth/tut/eui.pdf)
+
+* fedora: [http://standards.ieee.org/develop/regauth/tut/eui.pdf](http://standards.ieee.org/develop/regauth/tut/eui.pdf)
 
 DESCRIPTION:
 ------------
