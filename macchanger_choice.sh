@@ -11,7 +11,7 @@
 #    option         currently, just 'ouilist'
 #
 # Escalated Privileges Required: This script will invoke
-#    'ifconfig interface [down|up]' and 'macchanger -m",
+#    'ifconfig interface [down|up]' and 'macchanger -m',
 #    commands typically restricted to system administration roles. 
 #
 # Requirements: macchanger
