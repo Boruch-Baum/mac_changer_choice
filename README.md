@@ -126,12 +126,10 @@ The lowest two significant digits of the first octet
     prior to adoption of IEEE 802 standards"
 
 #### 00:00:00:00:00:00
-    IEEE[1] demands that this MAC address value never be used
+IEEE[1] demands that this MAC address value never be used
 
 #### ff:ff:ff:ff:ff:ff
-    IEEE[1] recommends this value be used for a distinct null
-    identifier, most often indicating the absence of a
-    valid EUI-48
+IEEE[1] recommends this value be used for a distinct null identifier, most often indicating the absence of a valid EUI-48
 
 REFERENCES
 ----------
