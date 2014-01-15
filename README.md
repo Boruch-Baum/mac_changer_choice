@@ -21,9 +21,9 @@ macchanger [https://github.com/alobbs/macchanger](https://github.com/alobbs/macc
 
 Your distribution may already have macchanger pre-packaged:
 
-* debian: [http://standards.ieee.org/develop/regauth/tut/eui.pdf](http://standards.ieee.org/develop/regauth/tut/eui.pdf)
+* debian: [http://packages.debian.org/search?keywords=macchanger&searchon=names&suite=all&section=all&sourceid=mozilla-search](http://packages.debian.org/search?keywords=macchanger&searchon=names&suite=all&section=all&sourceid=mozilla-search)
 
-* fedora: [http://standards.ieee.org/develop/regauth/tut/eui.pdf](http://standards.ieee.org/develop/regauth/tut/eui.pdf)
+* fedora: [https://apps.fedoraproject.org/packages/macchanger?_csrf_token=9a050bd93266c1f81066a9da6a864f0f5f18093d](https://apps.fedoraproject.org/packages/macchanger?_csrf_token=9a050bd93266c1f81066a9da6a864f0f5f18093d)
 
 DESCRIPTION:
 ------------
@@ -138,9 +138,10 @@ IEEE[1] recommends this value be used for a distinct null identifier, most often
 
 REFERENCES
 ----------
-[1] [http://standards.ieee.org/faqs/regauth.html](http://standards.ieee.org/faqs/regauth.html)
+[1] IEEE FAQs: The Registration Authority [http://standards.ieee.org/faqs/regauth.html](http://standards.ieee.org/faqs/regauth.html)
 
-[2] [http://standards.ieee.org/develop/regauth/tut/eui.pdf](http://standards.ieee.org/develop/regauth/tut/eui.pdf)
+[2] IEEE Guidelines for Use: Organizationally Unique Identifier
+(OUI) and Company ID (CID) [http://standards.ieee.org/develop/regauth/tut/eui.pdf](http://standards.ieee.org/develop/regauth/tut/eui.pdf)
 
 Author:
 -------
