@@ -25,6 +25,16 @@ Your distribution may already have macchanger pre-packaged:
 
 * fedora: [https://apps.fedoraproject.org/packages/macchanger?_csrf_token=9a050bd93266c1f81066a9da6a864f0f5f18093d](https://apps.fedoraproject.org/packages/macchanger?_csrf_token=9a050bd93266c1f81066a9da6a864f0f5f18093d)
 
+### Files:
+* macchanger_choice.sh - this executable file
+
+* mac_address_survey.output - the data file
+
+* OUI.list - a version of the IEEE list possibly newer than that used by macchanger.
+
+### Compatability
+This script has been tested in debian.
+
 DESCRIPTION:
 ------------
 Let a user easily select from among known mac vendor
@@ -126,7 +136,7 @@ The lowest two significant digits of the first octet
     reference [1],  "all OUI assignments made by the
     IEEE RA have M and X bits equal to zero" and "M=1 is
     not currently assigned". See there for information of
-    the two instances in which the X bit would be zero: a
+    the two instances in which the X bit would be one: a
     CID; or "A very small number of assignments made
     prior to adoption of IEEE 802 standards"
 
@@ -135,6 +145,25 @@ IEEE[1] demands that this MAC address value never be used
 
 #### ff:ff:ff:ff:ff:ff
 IEEE[1] recommends this value be used for a distinct null identifier, most often indicating the absence of a valid EUI-48
+
+MAKE YOUR OWN OUI.list
+----------------------
+Both macchanger and this script use the IEEE data file,
+available at DOUBLE CHECK THIS LINK 
+
+<pre>
+    http://standards.ieee.org/develop/regauth/oui/oui.txt
+</pre>
+
+The IEEE says it updates this list daily as new vendor
+vendor IDs are assigned.
+
+The list can be converted into the format used by
+macchanger and by this script,  as follows:
+<pre>
+    awk '$0 ~ "(hex)"{$2="";gsub("-"," ");print}' \
+        oui.txt > OUI.list 
+</pre>
 
 REFERENCES
 ----------

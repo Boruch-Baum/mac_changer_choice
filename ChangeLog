@@ -1,0 +1,10 @@
+2014-01-16  boruch
+
+	* Add local OUI.list
+	* Add documentation for OUI.list +
+	* Add code for using largest oui list available
+
+2014-01-15  boruch
+
+	* Initial posting
+

@@ -14,7 +14,16 @@
 #    'ifconfig interface [down|up]' and 'macchanger -m',
 #    commands typically restricted to system administration roles. 
 #
-# Requirements: macchanger
+# Requirements: macchanger(https://github.com/alobbs/macchanger).
+#    Your distribution may already have macchanger pre-packaged.
+#
+# Files:
+#    macchanger_choice.sh - this executable file
+#    mac_address_survey.output - the data file
+#    OUI.list - a version of the IEEE list possibly newer than
+#       that used by macchanger.
+#
+# Compatability: tested and works in debian
 #
 # DESCRIPTION:
 #    Let a user easily select from among known mac vendor
@@ -111,7 +120,7 @@
 #     reference [1],  "all OUI assignments made by the
 #     IEEE RA have M and X bits equal to zero" and "M=1 is
 #     not currently assigned". See there for information of
-#     the two instances in which the X bit would be zero: a
+#     the two instances in which the X bit would be one: a
 #     CID; or "A very small number of assignments made
 #     prior to adoption of IEEE 802 standards"
 #
@@ -122,6 +131,21 @@
 #     IEEE[1] recommends this value be used for a distinct null
 #     identifier, most often indicating the absence of a
 #     valid EUI-48
+#
+# MAKE YOUR OWN OUI.list
+#     Both macchanger and this script use the IEEE data file,
+#     available at DOUBLE CHECK THIS LINK 
+#
+#     http://standards.ieee.org/develop/regauth/oui/oui.txt
+#
+#     The IEEE says it updates this list daily as new vendor
+#     vendor IDs are assigned.
+#
+#     The list can be converted into the format used by
+#     macchanger and by this script,  as follows:
+#
+#     awk '$0 ~ "(hex)"{$2="";gsub("-"," ");print}' \
+#         oui.txt > OUI.list 
 #
 # REFERENCES
 #    [1] http://standards.ieee.org/faqs/regauth.html
@@ -148,7 +172,15 @@
 # USA
 # 
 #--------------------------------------------------------------
-oulist_absolute_file_name="/usr/share/macchanger/OUI.list"
+
+# This following absolute pathname is the default install
+# path in debian, and may be different in you operating
+# environment
+ouilist_absolute_file_name="/usr/share/macchanger/OUI.list"
+# This next should be the path of the version of the oui list
+# packaged with this script
+ouilist_local_file_name="./OUI.list"
+
 data_file="./mac_address_survey.output"
 
 # ERROR CODES
@@ -158,6 +190,7 @@ PATTERN_MATCH_NOT_FOUND=3
 INVALID_INTERFACE_NAME=4
 IFCONFIG_DOWN_UNSUCCESSFUL=5
 MACCHANGER_M_UNSUCESSFUL=6
+OUI_LIST_NOT_FOUND=7
 
 function usage_message()
 {
@@ -226,11 +259,35 @@ finalize_random_choice
 
 function ouilist_random_choose_mac()
 {
-number_of_lines=$(wc -l < ${oulist_absolute_file_name})
+if [[ -e ${ouilist_absolute_file_name} ]] ; then
+   number_of_lines=$(wc -l < ${ouilist_absolute_file_name})
+   if [[ -e ${ouilist_local_file_name} ]] ; then
+      local_number_of_lines=$(wc -l < ${ouilist_local_file_name})
+      if [[ ${local_number_of_lines} -gt ${number_of_lines} ]] ; then
+         ouilist_absolute_file_name=${ouilist_local_file_name}
+         printf "NOTE!: The macchanger_choice copy of the oui list seems to\n\
+       be more comprehensive than the one bundled in macchanger\n\
+       (%'d vs. %'d entries). We will use ours. You may \n\
+       want to consider updating the macchanger copy\n\n" \
+              ${local_number_of_lines} ${number_of_lines}
+         number_of_lines=${local_number_of_lines}
+      fi
+   fi
+elif [[ -e ${ouilist_local_file_name} ]] ; then
+   number_of_lines=$(wc -l < ${ouilist_local_file_name})
+   ouilist_absolute_file_name=${ouilist_local_file_name}
+   # no error or warning. the macchanger ouilist
+   # is probably just in a path I haven't checked
+else
+   printf "error: can not find oui list\n\
+       mac address was not changed\n"
+   exit ${OUI_LIST_NOT_FOUND}
+fi
+number_of_lines=$(wc -l < ${ouilist_absolute_file_name})
 line_number_selected=$(( ($RANDOM%${number_of_lines})+1 ))
 awk_result=$(awk -v line=${line_number_selected} \
                  'NR == line{printf $0"\n";exit}'\
-                  ${oulist_absolute_file_name})
+                  ${ouilist_absolute_file_name})
 awk_fields=(${awk_result})
 printf "selected: %s\n" "${awk_result}"
 new_mac_string=${awk_fields[0]}":"${awk_fields[1]}":"${awk_fields[2]}$(printf ':%02X:%02X:%02X' $(($RANDOM%256)) $(($RANDOM%256)) $(($RANDOM%256)) )
