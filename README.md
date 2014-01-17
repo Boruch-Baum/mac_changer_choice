@@ -7,10 +7,10 @@ from the list of known vendor IDs
 
 ####USAGE:
 <pre>
-           macchanger_choice.sh interface [ option | search_string ]
-              interface      eg. wlan0, eth0
-              search_string  eg. tablet, laptop, lenovo, mac\n\
-              option         currently, just 'ouilist'
+           macchanger_choice.sh <u>interface</u> [ <u>option</u> | <u>search_string</u> ]
+              <u>interface</u>      eg. wlan0, eth0
+              <u>search_string</u>  eg. tablet, laptop, lenovo, mac\n\
+              <u>option</u>         currently, just 'ouilist'
 </pre>
 
 ### Escalated Privileges Required:###
@@ -99,12 +99,12 @@ If one of your goals in using a random mac address is
    interactively choose from among the selected vendor
    strings, run
 
-         macchanger_choice.sh <interface>
+      macchanger_choice.sh <interface>
 
    Collecting the data for the sample survey file was
    the major effort of this project. The data file is
-   columnated, space delimited  text file, with the
-   following fields:
+   formatted as columnated, space delimited plain text,
+   with the following fields:
 
           Interface             (eg wlan, eth)
           Product Type          (eg laptop, tablet)
@@ -129,7 +129,7 @@ If one of your goals in using a random mac address is
 </pre>
 DETAILS OF THE 24-BIT FORMAT
 ----------------------------
-The lowest two significant digits of the first octet
+The least two significant bits of the first octet
     (called octet 0) are reserved and in practice should
     always be set to zero. Bit 0 is referred to as the M
     bit, and bit 1 is referred to as the X bit. Per
@@ -149,7 +149,7 @@ IEEE[1] recommends this value be used for a distinct null identifier, most often
 MAKE YOUR OWN OUI.list
 ----------------------
 Both macchanger and this script use the IEEE data file,
-available at DOUBLE CHECK THIS LINK 
+available at:
 
 <pre>
     http://standards.ieee.org/develop/regauth/oui/oui.txt

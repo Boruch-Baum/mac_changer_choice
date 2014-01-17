@@ -84,12 +84,12 @@
 #    interactively choose from among the selected vendor
 #    strings, run
 #
-#          macchanger_choice.sh <interface>
+#       macchanger_choice.sh <interface>
 #
 #    Collecting the data for the sample survey file was
 #    the major effort of this project. The data file is
-#    columnated, space delimited  text file, with the
-#    following fields:
+#    formatted as columnated, space delimited plain text,
+#    with the following fields:
 #
 #	  Interface             (eg wlan, eth)
 #	  Product Type          (eg laptop, tablet)
@@ -113,16 +113,16 @@
 #       > mac_address_survey.output
 #
 # DETAILS OF THE 24-BIT FORMAT
-#     The lowest two significant digits of the first octet
+#     The least two significant bits of the first octet
 #     (called octet 0) are reserved and in practice should
 #     always be set to zero. Bit 0 is referred to as the M
 #     bit, and bit 1 is referred to as the X bit. Per
 #     reference [1],  "all OUI assignments made by the
 #     IEEE RA have M and X bits equal to zero" and "M=1 is
 #     not currently assigned". See there for information of
-#     the two instances in which the X bit would be one: a
-#     CID; or "A very small number of assignments made
-#     prior to adoption of IEEE 802 standards"
+#     the two instances in which the X bit would be set to
+#     one: a CID; or "A very small number of assignments
+#     made prior to adoption of IEEE 802 standards"
 #
 # 00:00:00:00:00:00
 #     IEEE[1] demands that this MAC address value never be used
@@ -134,7 +134,7 @@
 #
 # MAKE YOUR OWN OUI.list
 #     Both macchanger and this script use the IEEE data file,
-#     available at DOUBLE CHECK THIS LINK 
+#     available at:
 #
 #     http://standards.ieee.org/develop/regauth/oui/oui.txt
 #
