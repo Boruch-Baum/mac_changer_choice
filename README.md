@@ -1,4 +1,4 @@
-mac_changer_choice
+mac_changer_choice (VERSION 2)
 ==================
 
 bash shell script and associated data file to generate a
@@ -10,20 +10,18 @@ from the list of known vendor IDs
            macchanger_choice.sh <u>interface</u> [ <u>option</u> | <u>search_string</u> ]
               <u>interface</u>      eg. wlan0, eth0
               <u>search_string</u>  eg. tablet, laptop, lenovo, mac\n\
-              <u>option</u>         currently, just 'ouilist'
+              <u>option</u>         ouilist  - choose random vendor from IEEE list
+                             -e       - retain current vendor string and
+                                        randomize user suffix three octets
 </pre>
 
 ### Escalated Privileges Required:###
-This script will invoke 'ifconfig interface [down|up]' and 'macchanger -m',
-commands typically restricted to system administration roles.</dd>
+This script will invoke 'ip link set dev interface [down|up|address]',
+commands typically restricted to system administration roles.
 ###Requirements:
-macchanger [https://github.com/alobbs/macchanger](https://github.com/alobbs/macchanger)
+package iproute2 -  Your distribution probably already has this installed.
 
-Your distribution may already have macchanger pre-packaged:
-
-* debian: [http://packages.debian.org/search?keywords=macchanger&searchon=names&suite=all&section=all&sourceid=mozilla-search](http://packages.debian.org/search?keywords=macchanger&searchon=names&suite=all&section=all&sourceid=mozilla-search)
-
-* fedora: [https://apps.fedoraproject.org/packages/macchanger?_csrf_token=9a050bd93266c1f81066a9da6a864f0f5f18093d](https://apps.fedoraproject.org/packages/macchanger?_csrf_token=9a050bd93266c1f81066a9da6a864f0f5f18093d)
+* [iproute page at the linux foundation](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
 
 ### Files:
 * macchanger_choice.sh - this executable file
@@ -41,8 +39,11 @@ Let a user easily select from among known mac vendor
    strings based upon hardware product device type,
    manufacturer, product name, or even model number.
 
-   Alternatively, randomly select an entry from the OUI list
-   bundled with 'maccchanger'.
+Alternatively:
+
+* randomly select an entry from the OUI list bundled with this script or with package 'maccchanger'.
+
+* randomize the non-vendor bytes of your mac address.
 
 ADVANTAGES:
 -----------
@@ -101,6 +102,22 @@ If one of your goals in using a random mac address is
 
       macchanger_choice.sh <interface>
 
+   If you want to randomize your mac address but retain
+   the current vendor string identiying the hardware,
+   ie. you only want to randomize the final three octets,
+   run
+
+      macchanger_choice.sh <interface> -e
+
+   If you want to change your mac address to a specific
+   value, run
+
+      ip link set dev <interface> down
+      ip link set dev <interface> address <xx:xx:xx:xx:xx:xx>
+      ip link set dev <interface> up
+
+SURVEY DATA FILE
+----------------
    Collecting the data for the sample survey file was
    the major effort of this project. The data file is
    formatted as columnated, space delimited plain text,
