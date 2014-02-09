@@ -1,4 +1,12 @@
-2014-01-17  optimum  <optimum@as5253bz849>
+2014-02-09  boruch
+	* remove dependency on macchanger
+	* update usage of ifconfig to iproute2
+	* add option '-e' (= macchanger -e)
+	* update documentation
+	* add --version
+	* BUGFIX - finding local ouilist
+
+2014-01-17  boruch
 
 	* Correct documentation errors and grammar
 

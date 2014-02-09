@@ -1,21 +1,23 @@
 #!/bin/bash
 #--------------------------------------------------------------
 #
-# bash shell script and associated data file to generate a
-# randomized mac-addreGenerate a randomized mac-address from
-# selected survey parameters or from the list of known vendor IDs
+# bash shell script and associated data file to generate a randomized
+# mac-address from selected survey parameters or from the list of
+# known vendor IDs
 #
 # USAGE: macchanger_choice.sh interface [ option | search_string ]
 #    interface      eg. wlan0, eth0
 #    search_string  eg. tablet, laptop, lenovo, mac\n\
-#    option         currently, just 'ouilist'
+#    option         ouilist  - choose random vendor from IEEE list
+#                   -e       - retain current vendor string and
+#                              randomize user suffix three octets
 #
 # Escalated Privileges Required: This script will invoke
-#    'ifconfig interface [down|up]' and 'macchanger -m',
+#    'ip link set dev interface [down|up|address],
 #    commands typically restricted to system administration roles. 
 #
-# Requirements: macchanger(https://github.com/alobbs/macchanger).
-#    Your distribution may already have macchanger pre-packaged.
+# Requirements: package iproute2
+#    Your distribution probably already has this installed.
 #
 # Files:
 #    macchanger_choice.sh - this executable file
@@ -30,8 +32,10 @@
 #    strings based upon hardware product device type,
 #    manufacturer, product name, or even model number.
 #
-#    Alternatively, randomly select an entry from the OUI list
-#    bundled with 'maccchanger'.
+#    Alternatively:
+#    - randomly select an entry from the OUI list bundled
+#      with this script or with package 'maccchanger'.
+#    - randomize the non-vendor bytes of your mac address.
 #
 # ADVANTAGES:
 #    1] Avoid assigning 'impossible' or 'implausible' addresses
@@ -48,8 +52,8 @@
 #    2.3] The surveyed list is small, but represents products
 #         commonly available for retail sale at the time of
 #         the survey (2014-01).
-#    2.4] Users can manually customize and add to their copy
-#         of the survey.
+#    2.4] Users can easily manually customize and add to their
+#         copy of the survey data file.
 #
 # DISCUSSION:
 #    If one of your goals in using a random mac address is
@@ -85,6 +89,22 @@
 #    strings, run
 #
 #       macchanger_choice.sh <interface>
+#
+#    If you want to randomize your mac address but retain
+#    the current vendor string identiying the hardware,
+#    ie. you only want to randomize the final three octets,
+#    run
+#
+#       macchanger_choice.sh <interface> -e
+#
+#    If you want to change your mac address to a specific
+#    value, run
+#
+#       ip link set dev <interface> down
+#       ip link set dev <interface> address <xx:xx:xx:xx:xx:xx>
+#       ip link set dev <interface> up
+#
+# SURVEY DATA FILE
 #
 #    Collecting the data for the sample survey file was
 #    the major effort of this project. The data file is
@@ -124,13 +144,14 @@
 #     one: a CID; or "A very small number of assignments
 #     made prior to adoption of IEEE 802 standards"
 #
-# 00:00:00:00:00:00
-#     IEEE[1] demands that this MAC address value never be used
+#     00:00:00:00:00:00
+#         IEEE[1] demands that this MAC address value
+#         never be used
 #
-# ff:ff:ff:ff:ff:ff
-#     IEEE[1] recommends this value be used for a distinct null
-#     identifier, most often indicating the absence of a
-#     valid EUI-48
+#     ff:ff:ff:ff:ff:ff
+#         IEEE[1] recommends this value be used for a
+#         distinct null identifier, most often indicating
+#         the absence of a valid EUI-48
 #
 # MAKE YOUR OWN OUI.list
 #     Both macchanger and this script use the IEEE data file,
@@ -181,7 +202,7 @@ ouilist_absolute_file_name="/usr/share/macchanger/OUI.list"
 # packaged with this script
 ouilist_local_file_name="./OUI.list"
 
-data_file="./mac_address_survey.output"
+data_file=$(dirname $0)"/mac_address_survey.output"
 
 # ERROR CODES
 INTERFACE_NOT_SUPPLIED=1
@@ -192,11 +213,25 @@ IFCONFIG_DOWN_UNSUCCESSFUL=5
 MACCHANGER_M_UNSUCESSFUL=6
 OUI_LIST_NOT_FOUND=7
 
+function version_message()
+{
+printf "macchanger_choice.sh\n\
+version 2\n\
+Copyright (C) 2014 Boruch baum\n\
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.\n\
+This is free software: you are free to change and redistribute it.\n\
+There is NO WARRANTY, to the extent permitted by law.\n\
+\n\
+https://github.com/Boruch-Baum/mac_changer_choice\n"
+}
+
 function usage_message()
 {
 printf "USAGE: macchanger_choice.sh interface [ option | search_string ]\n\
     interface      eg. wlan0, eth0\n\
-    option         currently, just 'ouilist'\n\
+    option         ouilist  - choose random vendor from IEEE list\n\
+                   -e       - retain current vendor string and\n\
+                              randomize user suffix three octets\n\
     search_string  eg. tablet, lAptOp, Lenovo, mac\n"
 }
 
@@ -295,6 +330,13 @@ finalize_random_choice
 }
 
 
+function retain_current_vendor_string()
+{
+awk_result=$( ip link show $1 | awk 'NR==2{print substr($2,0,9)}')
+new_mac_string=${awk_result}$(printf '%02X:%02X:%02X' $(($RANDOM%256)) $(($RANDOM%256)) $(($RANDOM%256)) )
+finalize_random_choice
+}
+
 function validate_interface()
 {
 interface_list=$(ip link show | \
@@ -314,15 +356,18 @@ exit ${INVALID_INTERFACE_NAME}
 # MAIN - execution begins here
 #
 #--------------------------------------------------------------
-if [[ $1 =~ ^(-)?(-)?(usage|help)$ ]] ; then
-   usage_message;
+if   [[ $1 =~ ^(-)?(-)?(usage|help)$ ]] ; then
+   usage_message
+   exit
+elif [[ $1 =~ ^(-)?(-)?(version)$ ]] ; then
+   version_message
    exit
 fi
 
 validate_interface $1
 
 case $# in
-1)  if [[ $1 == "ouilist" ]] ; then
+1)  if [[ $1 == "ouilist" ]] || [[ $1 == "-e" ]] ; then
        printf "error: you didn't tell me for which interface\n"
        usage_message;
        exit ${INTERFACE_NOT_SUPPLIED}
@@ -332,6 +377,8 @@ case $# in
     ;;
 2)  if [[ $2 == "ouilist" ]] ; then
        ouilist_random_choose_mac
+    elif [[ $2 == "-e" ]] ; then
+       retain_current_vendor_string $1
     else
        grep_random_choose_mac $1 $2
     fi
@@ -341,13 +388,24 @@ case $# in
     ;;
 esac
 
-ifconfig $1 down \
-|| { printf "error: aborting. failed to ifconfig %s down,\n\
+# ifconfig $1 down \
+ip link set dev $1 down \
+|| { exit_status=$?
+     printf "error: aborting. failed to ip link set dev %s down,\n\
+       reporting exit status %d\n\
        mac address was not changed\n\
-       Are you running this script with sudo?\n" $1; exit ${IFCONFIG_DOWN_UNSUCCESSFUL}; }
-macchanger --mac=${new_mac_string} $1 \
-|| { printf "error: command \"macchanger -m. %s\" failed,\n\
-       mac address was not changed, interface %s is down\n" $1 $1; exit ${MACCHANGER_M_UNSUCCESSFUL}; }
-ifconfig $1 up \
-||   printf "error: failed to ifconfig %s up, but change\n\
+       Are you running this script with sudo?\n" $1 ${exit_status}
+       exit ${IFCONFIG_DOWN_UNSUCCESSFUL}; }
+
+# macchanger --mac=${new_mac_string} $1 \
+ip link set dev $1 address ${new_mac_string} \
+|| { exit_status=$?
+     printf "error: command \"ip link set dev %s address\" failed,\n\
+       with exit status %d\n\
+       mac address was not changed, interface %s is down\n" \
+       $1 ${exit_status} $1
+       exit ${MACCHANGER_M_UNSUCCESSFUL}; }
+# ifconfig $1 up \
+ip link set dev $1 up \
+||   printf "error: failed to ip link set dev %s up, but change\n\
        of mac address was successful\n" $1
