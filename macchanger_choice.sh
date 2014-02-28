@@ -257,14 +257,14 @@ echo -e ${message_1}
 read
 less -SFX ${data_file}
 read -p "${message_2}" line_num
-while !  [[ "${line_num}" =~ ^[0-9]*$ ]] \
+while !  [[ "${line_num}" =~ ^[1-9][0-9]*$ ]] \
       || [[ ${line_num} -eq 0 ]] ; do
    echo -e "error: response not a positive integer."
    read -p "${message_2}" line_num
    done
 
-new_mac_string="$(awk -v line_num=${line_num} \    \
-                  'NR==line_num{printf $7}' ${data_file})$(printf ':%02X:%02X:%02X' $(($RANDOM/256)) $(($RANDOM/256)) $(($RANDOM/256)) )"
+new_mac_string=$(awk -v line_num=${line_num} \
+                  'NR==line_num{printf $7}' ${data_file})$(printf ':%02X:%02X:%02X' $(($RANDOM%256)) $(($RANDOM%256)) $(($RANDOM%256)) )
 finalize_random_choice
 }
 

@@ -1,3 +1,6 @@
+2014-02-28  boruch
+	* BUGFIX manually-choose-mac assignment
+
 2014-02-09  boruch
 	* remove dependency on macchanger
 	* update usage of ifconfig to iproute2

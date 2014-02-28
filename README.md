@@ -24,7 +24,7 @@ package iproute2 -  Your distribution probably already has this installed.
 * [iproute page at the linux foundation](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
 
 ### Files:
-* macchanger_choice.sh - this executable file
+* macchanger_choice.sh - the executable file
 
 * mac_address_survey.output - the data file
 
@@ -168,9 +168,7 @@ MAKE YOUR OWN OUI.list
 Both macchanger and this script use the IEEE data file,
 available at:
 
-<pre>
-    http://standards.ieee.org/develop/regauth/oui/oui.txt
-</pre>
+*  [http://standards.ieee.org/develop/regauth/oui/oui.txt](http://standards.ieee.org/develop/regauth/oui/oui.txt)
 
 The IEEE says it updates this list daily as new vendor
 vendor IDs are assigned.
