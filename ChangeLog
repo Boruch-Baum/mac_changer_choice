@@ -1,4 +1,7 @@
-2014-01-17  optimum  <optimum@as5253bz849>
+2014-03-02  boruch
+        * BUGFIX - using survey data was outputting only 3 octets
+
+2014-01-17  boruch
 
 	* Correct documentation errors and grammar
 
