@@ -347,7 +347,7 @@ for interface in $interface_list ; do
    fi
 done
 printf "error: invalid interface \"%s\" requested.\n\
-       available interfaces are: %s\n" $1 "${interface_list}"
+       available interfaces are: %s\n" "$1" "${interface_list}"
 exit ${INVALID_INTERFACE_NAME}
 }
 
